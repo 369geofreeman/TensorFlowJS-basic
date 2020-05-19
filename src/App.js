@@ -5,8 +5,8 @@ import "./App.css";
 const stateMachine = {
   initial: "initial",
   states: {
-    initial: { on: { next: "loadingModal" } },
-    loadingModal: { on: { next: "awaitingUpload" } },
+    initial: { on: { next: "loadingModel" } },
+    loadingModel: { on: { next: "awaitingUpload" } },
     awaitingUpload: { on: { next: "ready" } },
     ready: { on: { next: "classify" }, showImage: true },
     classify: { on: { next: "complete" } },
@@ -27,7 +27,7 @@ const formatResult = ({ className, probability }) => (
 
 function App() {
   const [state, dispatch] = useReducer(reducer, stateMachine.initial);
-  const [modal, setModal] = useState(null);
+  const [model, setModel] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const [results, setResults] = useState([]);
   const imageRef = useRef();
@@ -35,10 +35,10 @@ function App() {
 
   const next = () => dispatch("next");
 
-  const loadModal = async () => {
+  const loadModel = async () => {
     next();
-    const mobilenetModal = await mobilenet.load();
-    setModal(mobilenetModal);
+    const mobilenetModel = await mobilenet.load();
+    setModel(mobilenetModel);
     next();
   };
 
@@ -53,7 +53,7 @@ function App() {
 
   const identify = async () => {
     next();
-    const results = await modal.classify(imageRef.current);
+    const results = await model.classify(imageRef.current);
     setResults(results);
     next();
   };
@@ -65,8 +65,8 @@ function App() {
   };
 
   const buttonProps = {
-    initial: { text: "Load Modal", action: loadModal },
-    loadingModal: { text: "Loading modal...", action: () => {} },
+    initial: { text: "Load Model", action: loadModel },
+    loadingModel: { text: "Loading model...", action: () => {} },
     awaitingUpload: {
       text: "Upload Photo",
       action: () => inputRef.current.click(),
